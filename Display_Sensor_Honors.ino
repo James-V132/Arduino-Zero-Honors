@@ -10,18 +10,20 @@ MFRC522 myFRID(SS_PIN, RST_PIN);
 
 void setup() {
   lcd.begin(16,2);
-  Serial.begin(9600);
+  lcd.setCursor(0, 0);
+  lcd.print("Please Scan...");
+  
   SPI.begin();
   myFRID.PCD_Init();
 
+  Serial.begin(9600);
   Serial.println("Please scan your RFID card...");
   Serial.println();
 }
 
 void loop() {
-
-  myFRID.PCD_Init();
-
+  //PICC_IsNewCardPresent() = Look for new nearby card(s) and returns true if one is found
+  //PICC_ReadCardSerial() = Select one of the cards if multiple cards are present
   if(!myFRID.PICC_IsNewCardPresent() || !myFRID.PICC_ReadCardSerial())
   {
     return;
@@ -30,18 +32,23 @@ void loop() {
   Serial.print("USER ID tag :"); 
   String content = "";
 
+  //If successfully scanned the card's ID is stored in myFRID.uid
+  //myFRID.uid.size = how many bytes
+  //myFRID.uid.uidByte[] = array holding numerical values of ID
   for(byte i = 0; i < myFRID.uid.size; i++) 
   {
-    Serial.print(myFRID.uid.uidByte[i] < 0x10 ? " 0" : " ");
-    Serial.print(myFRID.uid.uidByte[i], HEX);
+    Serial.print(myFRID.uid.uidByte[i] < 0x10 ? " 0" : " "); //If number < 16 ensurses leading 0 before printing byte
+    Serial.print(myFRID.uid.uidByte[i], HEX); //Converts byte into hexidecimal
 
     content.concat(String(myFRID.uid.uidByte[i] < 0x10 ? " 0" : " "));
     content.concat(String(myFRID.uid.uidByte[i], HEX));
   }
+
   Serial.println();
   myFRID.PICC_HaltA();
 
   lcd.setCursor(0, 0);
+  lcd.clear();
   content.toUpperCase();
   lcd.print(content);
 
