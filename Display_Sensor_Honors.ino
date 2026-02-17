@@ -17,6 +17,7 @@ void setup() {
   myFRID.PCD_Init();
 
   Serial.begin(9600);
+  Serial.println();
   Serial.println("Please scan your RFID card...");
   Serial.println();
 }
@@ -45,11 +46,17 @@ void loop() {
   }
 
   Serial.println();
-  myFRID.PICC_HaltA();
+  Serial.println();
+  myFRID.PICC_DumpToSerial(&(myFRID.uid)); // Dumps all info available from card and displays it
 
   lcd.setCursor(0, 0);
   lcd.clear();
+
   content.toUpperCase();
   lcd.print(content);
+
+  delay(2000);
+  lcd.setCursor(0, 0);
+  lcd.print("Please Scan...");
 
 }
