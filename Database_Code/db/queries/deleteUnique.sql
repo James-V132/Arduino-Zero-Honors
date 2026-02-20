@@ -1,0 +1,2 @@
+DELETE FROM scan
+WHERE ScanId = $1;
