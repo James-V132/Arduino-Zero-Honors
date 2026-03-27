@@ -1,2 +1,0 @@
-SELECT * FROM scan
-ORDER BY ScanId ASC;
